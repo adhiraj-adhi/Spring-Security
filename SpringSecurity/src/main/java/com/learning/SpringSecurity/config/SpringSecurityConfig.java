@@ -19,31 +19,12 @@ public class SpringSecurityConfig {
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        http.csrf(customizer -> customizer.disable());  // to disable csrf we can have this lambda
-        /*
-        * But, still all the requests are not authenticated as anyone can access any endpoint.
-        * To authenticate every request we can use the following lambda:
-        *  */
-        http.authorizeHttpRequests(request -> request.anyRequest().authenticated());
-
-        /**
-         * But now if we try to access any endpoint we will get the "Access to localhost was
-         * denied" error. This is so because authentication is applied. But how to authenticate
-         * ourself as we do not have form or anything as such to have ourself authenticated.
-         * To enable form-login we can do:
-         */
-        // http.formLogin(Customizer.withDefaults()); // form-login with default settings
-        // We are commenting last line because we are making our session stateless.
-        /*
-        * The above form-login works as earlier with session and everything but if we try to
-        * hit say "localhost:8080" using POSTMAN than we will get the 200 status with HTML form
-        * as response which is nothing but authentication form that we enabled above. To tackle
-        * this problem we can do the following:
-        * */
-        http.httpBasic(Customizer.withDefaults());
-
-        http.sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
-        // see the below for note on above line.
+        http
+                .csrf(customizer -> customizer.disable())
+                .authorizeHttpRequests(request -> request.anyRequest().authenticated())
+                .httpBasic(Customizer.withDefaults())
+                .sessionManagement(session ->
+                        session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
 
         return http.build(); // returns SecurityFilterChain
     }

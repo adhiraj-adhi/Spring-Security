@@ -1,0 +1,43 @@
+# === Java Build ===
+*.class
+*.jar
+*.war
+*.ear
+
+# === Maven ===
+target/
+dependency-reduced-pom.xml
+release.properties
+pom.xml.tag
+pom.xml.releaseBackup
+pom.xml.versionsBackup
+pom.xml.next
+
+# === IntelliJ IDEA ===
+.idea/
+*.iml
+*.iws
+*.ipr
+out/
+
+# === Logs and OS Files ===
+*.log
+*.tmp
+.DS_Store
+Thumbs.db
+
+# === Eclipse (if ever opened in Eclipse) ===
+.project
+.classpath
+.settings/
+
+# === VS Code (if used) ===
+.vscode/
+
+# === Git ===
+!.gitignore
+
+# === Keep Maven wrapper (used for builds) ===
+!mvnw
+!mvnw.cmd
+!/.mvn

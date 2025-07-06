@@ -10,6 +10,7 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.NoOpPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 
@@ -40,9 +41,10 @@ public class SpringSecurityConfig {
     @Bean
     public AuthenticationProvider authenticationProvider() {
         DaoAuthenticationProvider provider = new DaoAuthenticationProvider();
-        provider.setPasswordEncoder(NoOpPasswordEncoder.getInstance());
-        /* for now we are assuming that we do not have password encoded in database so
-            we used NoOpPasswordEncoder.
+        provider.setPasswordEncoder(new BCryptPasswordEncoder(12));
+        /* changing the password encoder to Bcrypt because now user's entered password
+            (plain text) will be encoded and checked with the database password. Here, 12
+            is the round
          */
         provider.setUserDetailsService(userDetailsService); // provider using userDetailsService
         return provider;

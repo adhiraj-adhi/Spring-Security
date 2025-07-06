@@ -25,11 +25,7 @@ public class SpringSecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
                 .csrf(customizer -> customizer.disable())
-//                .authorizeHttpRequests(request -> request.anyRequest().authenticated())
-                .authorizeHttpRequests(request -> request
-                        .requestMatchers("/db-login").permitAll()  // allow public access
-                        .anyRequest().authenticated()
-                )
+                .authorizeHttpRequests(request -> request.anyRequest().authenticated())
                 .httpBasic(Customizer.withDefaults())
                 .sessionManagement(session ->
                         session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));

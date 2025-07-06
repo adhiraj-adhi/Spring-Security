@@ -1,15 +1,16 @@
 package com.learning.SpringSecurity.config;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.authentication.AuthenticationProvider;
+import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.core.userdetails.User;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.provisioning.InMemoryUserDetailsManager;
+import org.springframework.security.crypto.password.NoOpPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 
 @Configuration
@@ -33,29 +34,17 @@ public class SpringSecurityConfig {
         return http.build(); // returns SecurityFilterChain
     }
 
+    // creating our own AuthenticationProvider
+    @Autowired
+    private UserDetailsService userDetailsService;
     @Bean
-    public UserDetailsService userDetailsService() {
-        UserDetails user1 = User
-                .withDefaultPasswordEncoder()  // for time-being we are using it but we know that password are encoded
-                .username("adhiraj")
-                .password("a@123")
-                .roles("USER")
-                .build();
-
-        UserDetails user2 = User
-                .withDefaultPasswordEncoder() // this is also deprecated
-                .username("admin")
-                .password("admin")
-                .roles("ADMIN")
-                .build();
-        /*
-        * UserDetailsService is an interface so we will need to have a custom implementation
-        * class created for it or we can use an inbuilt implementation class say like:
-        * InMemoryUserDetailsManager which implements UserDetailsManager and UserDetailsManager
-        * in turn implements UserDetailsService.
-        * InMemoryUserDetailsManager has an interface with var args UserDetails, we will
-        * use that here.
-        * */
-        return new InMemoryUserDetailsManager(user1, user2);
+    public AuthenticationProvider authenticationProvider() {
+        DaoAuthenticationProvider provider = new DaoAuthenticationProvider();
+        provider.setPasswordEncoder(NoOpPasswordEncoder.getInstance());
+        /* for now we are assuming that we do not have password encoded in database so
+            we used NoOpPasswordEncoder.
+         */
+        provider.setUserDetailsService(userDetailsService); // provider using userDetailsService
+        return provider;
     }
 }
